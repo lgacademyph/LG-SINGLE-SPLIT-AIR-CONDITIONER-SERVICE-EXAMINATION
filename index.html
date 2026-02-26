@@ -26,6 +26,9 @@
     
     /* CHEAT/FOCUS WARNING */
     #cheat-warning { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #fd312e; color: white; z-index: 9999; justify-content: center; align-items: center; text-align: center; flex-direction: column; }
+    
+    /* Input Styling */
+    .name-input { width: 100%; padding: 12px; margin-bottom: 10px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
   </style>
  </head>
  <body>
@@ -33,6 +36,8 @@
   <div id="start-screen">
     <div class="start-card">
         <h1 style="color: black; margin-top: 0; text-align: center;">LG SINGLE SPLIT AIR CONDITIONER SERVICE EXAMINATION</h1>
+        <input type="text" id="userNameInput" class="name-input" placeholder="Enter your Full Name">
+        
         <div style="background-color: #FAFAFA; padding: 15px; margin-bottom: 20px; border-radius: 6px;">
             <p style="margin: 0 0 8px 0; font-size: 16px; color: #333;">&#x23F1;&#xFE0F; <b>Allotted Time:</b> <b style="color: #fd312e;">45 Minutes</b></p>
             <p style="margin: 0; font-size: 16px; color: #333;">&#x1F512; <b>Session Expiration:</b> Approx. <b style="color: #fd312e;" id="predicted-end">Calculating...</b></p>
@@ -61,7 +66,7 @@
       <div id="header">
           <div id="timer">45:00</div>
           <button onclick="manualSubmitFinish()" style="background-color: #333; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 5px;">
-              I HAVE SUBMITTED &rarr; CHECK SCORE
+              I HAVE SUBMITTED &rarr; VIEW RESULTS
           </button>
       </div>
       <div id="form-container">
@@ -79,14 +84,12 @@
 
   <div id="expired-msg">
       <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 40px; border-radius: 12px; width: 85%; max-width: 350px; text-align: center; border-top: 6px solid #fd312e; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
-          <h1 style="color: #fd312e; margin-top: 0;">Examination Closed</h1>
-          <p style="font-size: 16px; color: #333;">Your session has ended.</p>
+          <h1 id="statusHeader" style="color: #fd312e; margin-top: 0;">Examination Closed</h1>
+          <p id="statusSubtext" style="font-size: 16px; color: #333;">Your session has ended.</p>
           
-          <div style="margin-top: 25px; border-top: 2px dashed #eee; padding-top: 20px;">
-              <p style="font-size: 14px; color: #555; margin-bottom: 10px; font-weight: bold;">Check Your  Score:</p>
-              <input type="text" id="studentSearchName" placeholder="Enter your exact Full Name" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; margin-bottom: 10px; box-sizing: border-box;">
-              <button onclick="fetchMyScore()" style="background-color: #333; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%;">GET SCORE</button>
-              <div id="scoreDisplayResult" style="margin-top: 15px; font-size: 16px; font-weight: bold;"></div>
+          <div id="autoResultContainer" style="margin-top: 25px; border-top: 2px dashed #eee; padding-top: 20px;">
+              <div id="scoreDisplayResult" style="font-size: 16px; font-weight: bold;">
+                  </div>
           </div>
       </div>
   </div>
@@ -99,14 +102,14 @@
 
   <script>
     /* --- CONFIGURATION --- */
-    const EXAM_DURATION = .5 * 60; 
-    const WARNING_TIME = .3 * 60;   
-    const GRACE_DURATION = .3 * 60; 
-    const COOLDOWN_DURATION = 1 * 1 * 1 * 60; 
+    const EXAM_DURATION = 45 * 60; 
+    const WARNING_TIME = 5 * 60;   
+    const GRACE_DURATION = 1 * 60; 
+    const COOLDOWN_DURATION = 60 * 60; 
     const MAIN_KEY = 'lg_1exam_main_timer';
     const GRACE_KEY = 'lg_1exam_grace_timer';
+    const NAME_KEY = 'lg_1exam_user_name'; // Key for stored name
 
-    // PUT YOUR APPS SCRIPT WEB APP URL HERE
     const API_URL = "https://script.google.com/macros/s/AKfycbxXUmzov1d_xLj9u4x4Bmf7f8Ctb-aJGluOyaUXXF2Su-rFNwO_vNi5MVx7WYjGPW8u/exec";
     /* --------------------- */
     
@@ -116,6 +119,7 @@
 
     let mainStart = safeGet(MAIN_KEY);
     let graceStart = safeGet(GRACE_KEY);
+    let storedName = safeGet(NAME_KEY);
     let hasWarned = false;
 
     // --- ANTI-CHEAT LISTENERS ---
@@ -125,45 +129,20 @@
         }
     }
 
-    // Tab switch or minimize
-    document.addEventListener('visibilitychange', function() {
-        if (document.hidden) triggerCheatWarning();
-    });
-
-    // Mouse leaves the window
+    document.addEventListener('visibilitychange', function() { if (document.hidden) triggerCheatWarning(); });
     document.addEventListener('mouseleave', triggerCheatWarning);
-
-    // Desktop Key Traps (Ctrl+S, Ctrl+P, Shift+Ctrl+S)
     document.addEventListener("keydown", function (e) {
-        if (e.ctrlKey || e.metaKey) {
-            if (e.key === 's' || e.key === 'S' || e.key === 'p' || e.key === 'P') {
-                e.preventDefault(); triggerCheatWarning();
-            }
-        }
-        if (e.ctrlKey && e.shiftKey && (e.key === 's' || e.key === 'S')) {
-            e.preventDefault(); triggerCheatWarning();
-        }
-        if (e.ctrlKey && (e.key === "PrintScreen" || e.keyCode === 44)) {
-            e.preventDefault(); triggerCheatWarning();
-        }
+        if ((e.ctrlKey || e.metaKey) && ['s','S','p','P'].includes(e.key)) { e.preventDefault(); triggerCheatWarning(); }
+        if (e.ctrlKey && e.shiftKey && (e.key === 's' || e.key === 'S')) { e.preventDefault(); triggerCheatWarning(); }
     });
-
-    // Print Screen Trap
     document.addEventListener("keyup", function (e) {
         if (e.key === "PrintScreen" || e.keyCode === 44) {
-            try { navigator.clipboard.writeText("⚠️ Screenshots strictly prohibited."); } catch(err) {}
+            try { navigator.clipboard.writeText("⚠️ Screenshots prohibited."); } catch(err) {}
             triggerCheatWarning();
         }
     });
-
-    // Mobile 3-Finger Trap
-    document.addEventListener('touchstart', function(e) {
-        if (e.touches.length >= 3) triggerCheatWarning();
-    }, { passive: true });
-    
-    document.addEventListener('touchmove', function(e) {
-        if (e.touches.length >= 3) triggerCheatWarning();
-    }, { passive: true });
+    document.addEventListener('touchstart', function(e) { if (e.touches.length >= 3) triggerCheatWarning(); }, { passive: true });
+    document.addEventListener('touchmove', function(e) { if (e.touches.length >= 3) triggerCheatWarning(); }, { passive: true });
 
     // --- TIMER SYSTEM ---
     setInterval(systemCheck, 1000); 
@@ -181,7 +160,10 @@
               showUI('exam-interface');
               let mins = Math.floor(rem / 60); let secs = rem % 60;
               document.getElementById('timer').textContent = `SUBMIT NOW 0${mins}:${secs < 10 ? '0' : ''}${secs}`;
-          } else if (rem > -COOLDOWN_DURATION) { showUI('expired-msg'); } 
+          } else if (rem > -COOLDOWN_DURATION) { 
+              showUI('expired-msg');
+              autoFetchResult(); // Trigger auto-fetch
+          } 
           else { resetSystem(); }
       } 
       else if (mainStart) {
@@ -192,16 +174,28 @@
               let mins = Math.floor(rem / 60); let secs = rem % 60;
               document.getElementById('timer').textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
           } else if (rem > -GRACE_DURATION) { showUI('continue-screen'); } 
-          else if (rem > -(GRACE_DURATION + COOLDOWN_DURATION)) { showUI('expired-msg'); } 
+          else if (rem > -(GRACE_DURATION + COOLDOWN_DURATION)) { 
+              showUI('expired-msg'); 
+              autoFetchResult(); // Trigger auto-fetch
+          } 
           else { resetSystem(); }
       }
     }
 
-    function startExam() { mainStart = Date.now(); safeSet(MAIN_KEY,mainStart); systemCheck(); }
+    function startExam() { 
+        const nameVal = document.getElementById('userNameInput').value.trim();
+        if(!nameVal) { alert("Please enter your name to begin."); return; }
+        storedName = nameVal;
+        safeSet(NAME_KEY, nameVal);
+        mainStart = Date.now(); 
+        safeSet(MAIN_KEY,mainStart); 
+        systemCheck(); 
+    }
+    
     function startGracePeriod() { graceStart = Date.now(); safeSet(GRACE_KEY,graceStart); systemCheck(); }
     
     function manualSubmitFinish() {
-      if (confirm("⚠️ SAFETY CHECK ⚠️\n\nHave you clicked SUBMIT on the Google Form yet?\nIf you click OK without submitting first, your answers will be lost!")) {
+      if (confirm("⚠️ VIEW RESULTS ⚠️\n\nEnsure you clicked SUBMIT on the Google Form first! Continue to results?")) {
           graceStart = Date.now() - (GRACE_DURATION * 1000) - 1000; 
           safeSet(GRACE_KEY, graceStart);
           systemCheck(); 
@@ -215,48 +209,43 @@
     }
 
     function resetSystem() {
-      safeRemove(MAIN_KEY); safeRemove(GRACE_KEY); mainStart = null; graceStart = null; hasWarned = false;
+      safeRemove(MAIN_KEY); safeRemove(GRACE_KEY); safeRemove(NAME_KEY);
+      mainStart = null; graceStart = null; storedName = null; hasWarned = false;
       document.getElementById('timer').textContent = "45:00";
       showUI('start-screen');
     }
 
-    // --- LIVE SCORE & REMARKS CHECKER ---
-    function fetchMyScore() {
-      const nameInput = document.getElementById('studentSearchName').value;
+    // --- AUTO RESULT FETCHER ---
+    let fetchStarted = false;
+    function autoFetchResult() {
+      if (fetchStarted || !storedName) return;
+      fetchStarted = true;
+      
       const resultDiv = document.getElementById('scoreDisplayResult');
+      document.getElementById('statusHeader').textContent = "Retrieving Results...";
+      document.getElementById('statusSubtext').textContent = "Searching for: " + storedName;
+      resultDiv.innerHTML = "<i>Connecting to database...</i>";
       
-      if (!nameInput) { 
-          resultDiv.style.color = "#fd312e"; 
-          resultDiv.innerHTML = "Please enter your name."; 
-          return; 
-      }
-      
-      resultDiv.style.color = "#555"; 
-      resultDiv.innerHTML = "<i>Searching Master Record...</i>";
-      
-      fetch(API_URL + "?name=" + encodeURIComponent(nameInput))
+      // Delay search by 3 seconds to give Google Sheet time to sync
+      setTimeout(() => {
+        fetch(API_URL + "?name=" + encodeURIComponent(storedName))
           .then(res => res.json())
           .then(data => {
               if (data.found) { 
-                  // Set colors based on Pass/Fail
-                  let remarkColor = (data.remark === "PASSED") ? "#2e7d32" : "#fd312e"; // Green for pass, Red for fail
-                  
+                  document.getElementById('statusHeader').textContent = "Exam Result";
+                  let remarkColor = (data.remark === "PASSED") ? "#2e7d32" : "#fd312e";
                   resultDiv.innerHTML = `
                       <div style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-top: 15px;">
                           <p style="margin: 0 0 10px 0; font-size: 16px; color: #333;">Score: <b>${data.score}</b></p>
                           <p style="margin: 0; font-size: 18px; color: ${remarkColor};">Remark: <b>${data.remark}</b></p>
                       </div>
                   `; 
-              } 
-              else { 
-                  resultDiv.style.color = "#fd312e"; 
-                  resultDiv.innerHTML = "Record not found. Ensure you submitted the form and check your spelling."; 
+              } else { 
+                  resultDiv.innerHTML = "<p style='color:#fd312e;'>Result not found yet. Please wait a moment and refresh.</p>";
               }
           })
-          .catch(err => { 
-              resultDiv.style.color = "#fd312e"; 
-              resultDiv.innerHTML = "Database connection error."; 
-          });
+          .catch(err => { resultDiv.innerHTML = "<p style='color:#fd312e;'>Error connecting to database.</p>"; });
+      }, 3000);
     }
   </script>
  </body>
