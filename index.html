@@ -143,6 +143,9 @@
         if (e.ctrlKey && e.shiftKey && (e.key === 's' || e.key === 'S')) {
             e.preventDefault(); triggerCheatWarning();
         }
+        if (e.ctrlKey && (e.key === "PrintScreen" || e.keyCode === 44)) {
+            e.preventDefault(); triggerCheatWarning();
+        }
     });
 
     // Print Screen Trap
