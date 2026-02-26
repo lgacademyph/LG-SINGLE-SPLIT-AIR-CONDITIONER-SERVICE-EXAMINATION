@@ -83,7 +83,7 @@
           <p style="font-size: 16px; color: #333;">Your session has ended.</p>
           
           <div style="margin-top: 25px; border-top: 2px dashed #eee; padding-top: 20px;">
-              <p style="font-size: 14px; color: #555; margin-bottom: 10px; font-weight: bold;">Check Your Auto-Graded Score:</p>
+              <p style="font-size: 14px; color: #555; margin-bottom: 10px; font-weight: bold;">Check Your  Score:</p>
               <input type="text" id="studentSearchName" placeholder="Enter your exact Full Name" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; margin-bottom: 10px; box-sizing: border-box;">
               <button onclick="fetchMyScore()" style="background-color: #333; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%;">GET SCORE</button>
               <div id="scoreDisplayResult" style="margin-top: 15px; font-size: 16px; font-weight: bold;"></div>
@@ -220,21 +220,43 @@
       showUI('start-screen');
     }
 
-    // --- SCORE CHECKER ---
+    // --- LIVE SCORE & REMARKS CHECKER ---
     function fetchMyScore() {
       const nameInput = document.getElementById('studentSearchName').value;
       const resultDiv = document.getElementById('scoreDisplayResult');
-      if (!nameInput) { resultDiv.style.color = "#fd312e"; resultDiv.innerHTML = "Please enter your name."; return; }
       
-      resultDiv.style.color = "#555"; resultDiv.innerHTML = "<i>Searching records...</i>";
+      if (!nameInput) { 
+          resultDiv.style.color = "#fd312e"; 
+          resultDiv.innerHTML = "Please enter your name."; 
+          return; 
+      }
+      
+      resultDiv.style.color = "#555"; 
+      resultDiv.innerHTML = "<i>Searching Master Record...</i>";
       
       fetch(API_URL + "?name=" + encodeURIComponent(nameInput))
           .then(res => res.json())
           .then(data => {
-              if (data.found) { resultDiv.style.color = "#2e7d32"; resultDiv.innerHTML = `Your Score: <span style="font-size: 22px;">${data.score} / 20</span>`; } 
-              else { resultDiv.style.color = "#fd312e"; resultDiv.innerHTML = "Record not found. Check spelling or try again."; }
+              if (data.found) { 
+                  // Set colors based on Pass/Fail
+                  let remarkColor = (data.remark === "PASSED") ? "#2e7d32" : "#fd312e"; // Green for pass, Red for fail
+                  
+                  resultDiv.innerHTML = `
+                      <div style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-top: 15px;">
+                          <p style="margin: 0 0 10px 0; font-size: 16px; color: #333;">Score: <b>${data.score}</b></p>
+                          <p style="margin: 0; font-size: 18px; color: ${remarkColor};">Remark: <b>${data.remark}</b></p>
+                      </div>
+                  `; 
+              } 
+              else { 
+                  resultDiv.style.color = "#fd312e"; 
+                  resultDiv.innerHTML = "Record not found. Ensure you submitted the form and check your spelling."; 
+              }
           })
-          .catch(err => { resultDiv.style.color = "#fd312e"; resultDiv.innerHTML = "Database connection error."; });
+          .catch(err => { 
+              resultDiv.style.color = "#fd312e"; 
+              resultDiv.innerHTML = "Database connection error."; 
+          });
     }
   </script>
  </body>
