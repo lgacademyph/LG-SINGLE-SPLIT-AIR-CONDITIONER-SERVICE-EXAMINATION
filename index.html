@@ -23,7 +23,7 @@
         border-radius: 12px; 
         box-shadow: 0 8px 24px rgba(0,0,0,0.1); 
         border: 1px solid #e0e0e0; 
-        border-top: 6px solid #fd312e; 
+        border-top: 6px solid #A50034; 
         background: #fff; 
         
         /* 1. THE DYNAMIC WIDTH (From the last step) */
@@ -287,8 +287,23 @@
     function resetSystem() {
       safeRemove(MAIN_KEY); safeRemove(GRACE_KEY); safeRemove(NAME_KEY);
       mainStart = null; graceStart = null; storedName = null; hasWarned = false;
-      document.getElementById('timer').textContent = "45:00";
-      showUI('start-screen');
+      
+      // 1. Hide everything else
+      if(examInterface) examInterface.style.display = 'none';
+      if(modal) modal.style.display = 'none';
+      if(continueScreen) continueScreen.style.display = 'none';
+      if(expiredMsg) expiredMsg.style.display = 'none';
+      
+      if(timerDisplay) {
+          timerDisplay.style.fontSize = "28px";
+          timerDisplay.style.color = '#A50034';
+      }
+      
+      // 2. THE FIX: Force the browser to scroll to the absolute top
+      window.scrollTo(0, 0);
+      
+      // 3. THE FIX: Explicitly set it back to 'flex' so the centering engine turns back on
+      if(startScreen) startScreen.style.display = 'flex';
     }
 
     // --- AUTO RESULT FETCHER ---
