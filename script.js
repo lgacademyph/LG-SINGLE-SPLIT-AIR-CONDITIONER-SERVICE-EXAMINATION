@@ -1,4 +1,4 @@
-    /* --- CONFIGURATION --- */
+/* --- CONFIGURATION --- */
     const EXAM_DURATION = .5 * 60; 
     const WARNING_TIME = .3 * 60;   
     const GRACE_DURATION = .3 * 60; 
@@ -56,7 +56,7 @@
           if (rem > 0) {
               showUI('exam-interface');
               let mins = Math.floor(rem / 60); let secs = rem % 60;
-              document.getElementById('timer').textContent = `SUBMIT NOW 0${mins}:${secs < 10 ? '0' : ''}${secs}`;
+              document.getElementById('timer').textContent = `SUBMIT NOW AT 0${mins}:${secs < 10 ? '0' : ''}${secs}`;
           } else if (rem > -COOLDOWN_DURATION) { 
               showUI('expired-msg');
               autoFetchResult(); // Trigger auto-fetch
