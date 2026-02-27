@@ -6,7 +6,8 @@
   <link rel="icon" type="image/png" href="LG-icon.png?v=2">
   <style>
       /* DISABLE TEXT SELECTION */
-      body { padding: 40px; font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #fce4e4; overflow: hidden; height: 100vh; 
+      body { 
+        margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #fce4e4; overflow: hidden; height: 100vh; 
         -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
       }
       
@@ -15,8 +16,20 @@
         position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
         background-color: #f6f6f6; display: flex; flex-direction: column; 
         justify-content: center; align-items: center; z-index: 2000; text-align: center;
+        /* NEW: Adds a physical invisible bumper around the edges of the screen */
+        padding: 20px; box-sizing: border-box; 
       }
-      .start-card { padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #ddd; max-width: 600px; }
+
+      .start-card { 
+        padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #ddd; max-width: 600px; 
+        /* NEW: Forces the card to never be taller than 90% of the screen height */
+        max-height: 90vh; 
+        /* NEW: If the screen is TINY, it adds a scrollbar inside the card itself */
+        overflow-y: auto; 
+        /* NEW: Ensures the 40px padding doesn't make the card wider than the screen */
+        width: 100%; box-sizing: border-box;
+      }
+
       .start-btn { background-color: #fd312e; color: white; border: none; padding: 15px 40px; font-size: 22px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 20px; }
       .start-btn:hover { background-color: #C62828; }
 
