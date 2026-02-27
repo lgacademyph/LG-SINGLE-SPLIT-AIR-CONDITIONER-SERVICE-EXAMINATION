@@ -13,8 +13,8 @@
         <input type="text" id="userNameInput" class="name-input" placeholder="Enter your Complete Name (eg. Juan Delacruz)">
         
         <div style="background-color: #FAFAFA; padding: 15px; margin-bottom: 20px; border-radius: 6px;">
-            <p style="margin: 0 0 8px 0; font-size: 16px; color: #333;">&#x23F1;&#xFE0F; <b>Allotted Time:</b> <b style="color: #fd312e;">45 Minutes</b></p>
-            <p style="margin: 0; font-size: 16px; color: #333;">&#x1F512; <b>Session Expiration:</b> Approx. <b style="color: #fd312e;" id="predicted-end">Calculating...</b></p>
+            <p style="margin: 0 0 8px 0; font-size: 16px; color: #333;">&#x23F1;&#xFE0F; <b>Allotted Time:</b> <b style="color: #A50034;">45 Minutes</b></p>
+            <p style="margin: 0; font-size: 16px; color: #333;">&#x1F512; <b>Session Expiration:</b> Approx. <b style="color: #A50034;" id="predicted-end">Calculating...</b></p>
         </div>
         <ul style="color: #555; font-size: 14px; line-height: 1.6; padding-left: 20px;">
             <li>Complete all fields before time runs out.</li>
@@ -27,7 +27,7 @@
 
   <div id="continue-screen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #f6f6f6; flex-direction: column; justify-content: center; align-items: center; z-index: 2000;">
       <div class="start-card" style="text-align: center;">
-          <h1 style="color: #fd312e; margin-top: 0;">Time's Up!</h1>
+          <h1 style="color: #A50034; margin-top: 0;">Time's Up!</h1>
           <p style="font-size: 16px; color: #333;">Your 45 minutes have ended.</p>
           <div style="background-color: #FAFAFA; padding: 15px; margin-bottom: 20px;">
               <p style="margin: 0;">If you <b>have not</b> submitted yet, use your <b>1 final grace minute</b> below.</p>
@@ -50,15 +50,15 @@
 
   <div id="warning-modal">
       <div class="modal-content">
-          <h2 style="color: #fd312e; margin-top: 0;">Time Advisory</h2>
+          <h2 style="color: #A50034; margin-top: 0;">Time Advisory</h2>
           <p style="font-size: 18px; color: #333;">You are nearing the end of your <b>45-minute</b> exam.</p>
           <button onclick="document.getElementById('warning-modal').style.display='none'" class="start-btn" style="width: auto;">RESUME</button>
       </div>
   </div>
 
   <div id="expired-msg">
-      <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 40px; border-radius: 12px; width: 85%; max-width: 350px; text-align: center; border-top: 6px solid #fd312e; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
-          <h1 id="statusHeader" style="color: #fd312e; margin-top: 0;">Examination Closed</h1>
+      <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 40px; border-radius: 12px; width: 85%; max-width: 350px; text-align: center; border-top: 6px solid #A50034; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+          <h1 id="statusHeader" style="color: #A50034; margin-top: 0;">Examination Closed</h1>
           <p id="statusSubtext" style="font-size: 16px; color: #333;">Your session has ended.</p>
           
           <div id="autoResultContainer" style="margin-top: 25px; border-top: 2px dashed #eee; padding-top: 20px;">
