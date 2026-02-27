@@ -23,7 +23,7 @@
         border-radius: 12px; 
         box-shadow: 0 8px 24px rgba(0,0,0,0.1); 
         border: 1px solid #e0e0e0; 
-        border-top: 6px solid #fd312e; 
+        border-top: 6px solid #A50034; 
         background: #fff; 
         
         /* THIS IS THE MAGIC: */
@@ -36,7 +36,7 @@
       }
 
       .start-btn { 
-        background-color: #fd312e; color: white; border: none; padding: 15px 40px; 
+        background-color: #A50034; color: white; border: none; padding: 15px 40px; 
         font-size: 22px; border-radius: 8px; cursor: pointer; font-weight: bold; 
         margin-top: 20px; 
         
@@ -48,8 +48,8 @@
 
       /* EXAM INTERFACE */
       #exam-interface { display: none; }
-      #header { position: relative; background: #f6f6f6; padding: 5px; text-align: center; border-bottom: 6px solid #fd312e; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-      #timer { font-size: 28px; font-weight: bold; color: #fd312e; }
+      #header { position: relative; background: #f6f6f6; padding: 5px; text-align: center; border-bottom: 6px solid #A50034; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+      #timer { font-size: 28px; font-weight: bold; color: #A50034; }
       #form-container { width: 100%; height: calc(100vh - 1px); position: relative; }
       iframe { width: 100%; height: 100%; border: none; }
       
@@ -58,9 +58,9 @@
         display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
         background-color: rgba(0,0,0,0.85); z-index: 2147483647; justify-content: center; align-items: center;
       }
-      .modal-content { background-color: #fff; padding: 40px; border-radius: 15px; width: 85%; max-width: 400px; text-align: center; border: 3px solid #fd312e; }
-      .modal-content h2 { color: #fd312e; margin-top: 0; }
-      .close-btn { background-color: #fd312e; color: white; border: none; padding: 15px 30px; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold; margin-top: 20px; pointer-events: auto; }
+      .modal-content { background-color: #fff; padding: 40px; border-radius: 15px; width: 85%; max-width: 400px; text-align: center; border: 3px solid #A50034; }
+      .modal-content h2 { color: #A50034; margin-top: 0; }
+      .close-btn { background-color: #A50034; color: white; border: none; padding: 15px 30px; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold; margin-top: 20px; pointer-events: auto; }
       .close-btn:hover { background-color: #C62828; }
 
       #expired-msg { 
@@ -75,7 +75,7 @@
       }
 
       /* CHEAT/FOCUS WARNING */
-      #cheat-warning { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #fd312e; color: white; z-index: 9999; justify-content: center; align-items: center; text-align: center; flex-direction: column; }
+      #cheat-warning { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #A50034; color: white; z-index: 9999; justify-content: center; align-items: center; text-align: center; flex-direction: column; }
       
       /* Input Styling */
       .name-input { width: 100%; padding: 12px; margin-bottom: 10px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
@@ -85,12 +85,12 @@
 
   <div id="start-screen">
     <div class="start-card">
-        <h1 style="color: black; margin-top: 0; margin-bottom: 5px; text-align: center;">EXAM</h1>
+        <h1 style="color: black; margin-top: 0; margin-bottom: 5px; text-align: center;">LG SINGLE SPLIT AIR CONDITIONER SERVICE EXAMINATION</h1>
         <br>
         <input type="text" id="userNameInput" class="name-input" placeholder="Enter your Complete Name (eg. Juan Delacruz)">
         <div style="background-color: #FAFAFA; padding: 15px; margin-bottom: 20px; border-radius: 6px;">
-            <p style="margin: 0 0 8px 0; font-size: 16px; color: #333;">&#x23F1;&#xFE0F; <b>Allotted Time:</b> <b style="color: #fd312e;">45 Minutes</b></p>
-            <p style="margin: 0; font-size: 16px; color: #333;">&#x1F512; <b>Session Expiration:</b> Approx. <b style="color: #fd312e;" id="predicted-end">Calculating...</b></p>
+            <p style="margin: 0 0 8px 0; font-size: 16px; color: #333;">&#x23F1;&#xFE0F; <b>Allotted Time:</b> <b style="color: #A50034;">45 Minutes</b></p>
+            <p style="margin: 0; font-size: 16px; color: #333;">&#x1F512; <b>Session Expiration:</b> Approx. <b style="color: #A50034;" id="predicted-end">Calculating...</b></p>
         </div>
         <h3 style="font-size: 16px; color: #333; margin-bottom: 10px;">Guidelines:</h3>
         <ul style="color: #555; font-size: 14px; line-height: 1.6; padding-left: 20px; margin-bottom: 30px;">
@@ -107,8 +107,8 @@
   </div>
 
   <div id="continue-screen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #f6f6f6; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; text-align: center;">
-      <div class="start-card" style="padding: 40px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); border: 1px solid #e0e0e0; max-width: 400px; background: #fff; margin: auto; border-top: 6px solid #fd312e;">
-          <h1 style="color: #fd312e; margin-top: 0; margin-bottom: 15px; text-align: center;">Time's Up!</h1>
+      <div class="start-card" style="padding: 40px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); border: 1px solid #e0e0e0; max-width: 400px; background: #fff; margin: auto; border-top: 6px solid #A50034;">
+          <h1 style="color: #A50034; margin-top: 0; margin-bottom: 15px; text-align: center;">Time's Up!</h1>
           <p style="font-size: 16px; color: #333; text-align: center;">Your 45 minutes have ended.</p>
           
           <div style="background-color: #FAFAFA; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
@@ -120,7 +120,7 @@
           </p>
           
           <div style="text-align: center;">
-              <button class="start-btn" style="background-color: #fd312e;" onclick="startGracePeriod()">USE FINAL MINUTE</button>
+              <button class="start-btn" style="background-color: #A50034;" onclick="startGracePeriod()">USE FINAL MINUTE</button>
           </div>
       </div>
   </div>
@@ -138,8 +138,8 @@
   </div>
 
   <div id="warning-modal">
-      <div class="modal-content" style="padding: 40px; border-radius: 12px; max-width: 350px; border: none; border-top: 6px solid #fd312e; box-shadow: 0 15px 35px rgba(0,0,0,0.2);">
-          <h2 style="color: #fd312e; margin-top: 0; font-size: 26px; letter-spacing: 0.5px;">Time Advisory</h2>
+      <div class="modal-content" style="padding: 40px; border-radius: 12px; max-width: 350px; border: none; border-top: 6px solid #A50034; box-shadow: 0 15px 35px rgba(0,0,0,0.2);">
+          <h2 style="color: #A50034; margin-top: 0; font-size: 26px; letter-spacing: 0.5px;">Time Advisory</h2>
           <p style="font-size: 18px; color: #333; margin-top: 20px;">You are nearing the end of your <b>45-minute</b> exam.</p>
           <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 30px; padding: 0 15px;">
               Please finalize your answers and submit the form shortly. 
@@ -149,8 +149,8 @@
   </div>
 
   <div id="expired-msg">
-      <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 40px; border-radius: 12px; width: 85%; max-width: 350px; text-align: center; border-top: 6px solid #fd312e; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid #ddd; border-top: 6px solid #fd312e; box-sizing: border-box;">
-          <h1 id="statusHeader" style="color: #fd312e; margin-top: 0; font-size: 26px;">Examination Closed</h1>
+      <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 40px; border-radius: 12px; width: 85%; max-width: 350px; text-align: center; border-top: 6px solid #A50034; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid #ddd; border-top: 6px solid #A50034; box-sizing: border-box;">
+          <h1 id="statusHeader" style="color: #A50034; margin-top: 0; font-size: 26px;">Examination Closed</h1>
           <p id="statusSubtext" style="font-size: 18px; color: #333; margin-top: 20px;">Your session has timed out.</p>
           
           <div id="autoResultContainer" style="margin-top: 25px; border-top: 2px dashed #eee; padding-top: 20px;">
@@ -231,7 +231,7 @@
           if (rem > 0) {
               showUI('exam-interface');
               let mins = Math.floor(rem / 60); let secs = rem % 60;
-              document.getElementById('timer').textContent = `SUBMIT NOW 0${mins}:${secs < 10 ? '0' : ''}${secs}`;
+              document.getElementById('timer').textContent = `SUBMIT NOW AT 0${mins}:${secs < 10 ? '0' : ''}${secs}`;
           } else if (rem > -COOLDOWN_DURATION) { 
               showUI('expired-msg');
               autoFetchResult(); // Trigger auto-fetch
