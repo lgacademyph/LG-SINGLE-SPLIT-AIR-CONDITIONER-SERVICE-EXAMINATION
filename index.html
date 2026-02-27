@@ -3,63 +3,131 @@
  <head>
   <title>LG SINGLE SPLIT AIR CONDITIONER SERVICE EXAMINATION</title>
   <link rel="icon" type="image/png" href="LG-icon.png?v=2">
-  <link rel="stylesheet" href="style.css">
+  <style>
+      /* DISABLE TEXT SELECTION */
+      body { margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #fce4e4; overflow: hidden; height: 100vh; 
+        -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
+      }
+      
+      /* START SCREEN */
+      #start-screen { 
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+        background-color: #f6f6f6; display: flex; flex-direction: column; 
+        justify-content: center; align-items: center; z-index: 2000; text-align: center;
+      }
+      .start-card { padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #ddd; max-width: 400px; }
+      .start-btn { background-color: #fd312e; color: white; border: none; padding: 15px 40px; font-size: 22px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 20px; }
+      .start-btn:hover { background-color: #C62828; }
+
+      /* EXAM INTERFACE */
+      #exam-interface { display: none; }
+      #header { position: relative; background: #f6f6f6; padding: 5px; text-align: center; border-bottom: 6px solid #fd312e; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+      #timer { font-size: 28px; font-weight: bold; color: #fd312e; }
+      #form-container { width: 100%; height: calc(100vh - 1px); position: relative; }
+      iframe { width: 100%; height: 100%; border: none; }
+      
+      /* WARNING MODAL */
+      #warning-modal { 
+        display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+        background-color: rgba(0,0,0,0.85); z-index: 2147483647; justify-content: center; align-items: center;
+      }
+      .modal-content { background-color: #fff; padding: 40px; border-radius: 15px; width: 85%; max-width: 400px; text-align: center; border: 3px solid #fd312e; }
+      .modal-content h2 { color: #fd312e; margin-top: 0; }
+      .close-btn { background-color: #fd312e; color: white; border: none; padding: 15px 30px; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold; margin-top: 20px; pointer-events: auto; }
+      .close-btn:hover { background-color: #C62828; }
+
+      #expired-msg { 
+        display: none; 
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        height: 100%; 
+        background-color: #f6f6f6; 
+        z-index: 3000; 
+      }
+
+      /* CHEAT/FOCUS WARNING */
+      #cheat-warning { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #fd312e; color: white; z-index: 9999; justify-content: center; align-items: center; text-align: center; flex-direction: column; }
+      
+      /* Input Styling */
+      .name-input { width: 100%; padding: 12px; margin-bottom: 10px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
+  </style>
  </head>
  <body>
 
   <div id="start-screen">
-    <div class="start-card">
-        <h1 style="color: black; margin-top: 0; text-align: center;">LG SINGLE SPLIT AIR CONDITIONER SERVICE EXAMINATION</h1>
+    <div class="start-card" style="text-align: left; padding: 40px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); border: 1px solid #e0e0e0; max-width: 400px; background: #fff; margin: auto; border-top: 6px solid #fd312e;">
+        <h1 style="color: black; margin-top: 0; margin-bottom: 5px; text-align: center;">LG SINGLE SPLIT AIR CONDITIONER SERVICE EXAMINATION</h1>
+        <br>
         <input type="text" id="userNameInput" class="name-input" placeholder="Enter your Complete Name (eg. Juan Delacruz)">
-        
         <div style="background-color: #FAFAFA; padding: 15px; margin-bottom: 20px; border-radius: 6px;">
-            <p style="margin: 0 0 8px 0; font-size: 16px; color: #333;">&#x23F1;&#xFE0F; <b>Allotted Time:</b> <b style="color: #A50034;">45 Minutes</b></p>
-            <p style="margin: 0; font-size: 16px; color: #333;">&#x1F512; <b>Session Expiration:</b> Approx. <b style="color: #A50034;" id="predicted-end">Calculating...</b></p>
+            <p style="margin: 0 0 8px 0; font-size: 16px; color: #333;">&#x23F1;&#xFE0F; <b>Allotted Time:</b> <b style="color: #fd312e;">45 Minutes</b></p>
+            <p style="margin: 0; font-size: 16px; color: #333;">&#x1F512; <b>Session Expiration:</b> Approx. <b style="color: #fd312e;" id="predicted-end">Calculating...</b></p>
         </div>
-        <ul style="color: #555; font-size: 14px; line-height: 1.6; padding-left: 20px;">
-            <li>Complete all fields before time runs out.</li>
+        <h3 style="font-size: 16px; color: #333; margin-bottom: 10px;">Guidelines:</h3>
+        <ul style="color: #555; font-size: 14px; line-height: 1.6; padding-left: 20px; margin-bottom: 30px;">
+            <li>Please complete all required fields before the time runs out.</li>
+            <li>Once the timer reaches 00:00, the form will immediately hide and lock.</li>
+            <li>Please ensure your session remains active and stable.</li>
             <li>Do not switch tabs or use keyboard shortcuts. Security tracking is active.</li>
             <li>Click "I HAVE SUBMITTED" at the top when finished.</li>
         </ul>
-        <button class="start-btn" onclick="startExam()">START EXAM</button>
+        <div style="text-align: center;">
+            <button class="start-btn" onclick="startExam()">START EXAM</button>
+        </div>
     </div>
   </div>
 
-  <div id="continue-screen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #f6f6f6; flex-direction: column; justify-content: center; align-items: center; z-index: 2000;">
-      <div class="start-card" style="text-align: center;">
-          <h1 style="color: #A50034; margin-top: 0;">Time's Up!</h1>
-          <p style="font-size: 16px; color: #333;">Your 45 minutes have ended.</p>
-          <div style="background-color: #FAFAFA; padding: 15px; margin-bottom: 20px;">
-              <p style="margin: 0;">If you <b>have not</b> submitted yet, use your <b>1 final grace minute</b> below.</p>
+  <div id="continue-screen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #f6f6f6; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; text-align: center;">
+      <div class="start-card" style="padding: 40px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); border: 1px solid #e0e0e0; max-width: 400px; background: #fff; margin: auto; border-top: 6px solid #fd312e;">
+          <h1 style="color: #fd312e; margin-top: 0; margin-bottom: 15px; text-align: center;">Time's Up!</h1>
+          <p style="font-size: 16px; color: #333; text-align: center;">Your 45 minutes have ended.</p>
+          
+          <div style="background-color: #FAFAFA; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
+              <p style="margin: 0; font-size: 15px; color: #333;">If you <b>have not</b> submitted yet, click below to use your <b>1 final grace minute</b> to do so.</p>
           </div>
-          <button class="start-btn" onclick="startGracePeriod()">USE FINAL MINUTE</button>
+          
+          <p style="font-size: 14px; color: #555; text-align: center; margin-bottom: 25px; padding: 0 10px; font-style: italic;">
+              <b>Note:</b> If you have already submitted your exam successfully, please disregard this message and simply close this tab.
+          </p>
+          
+          <div style="text-align: center;">
+              <button class="start-btn" style="background-color: #fd312e;" onclick="startGracePeriod()">USE FINAL MINUTE</button>
+          </div>
       </div>
   </div>
 
   <div id="exam-interface">
       <div id="header">
-          <div id="timer" style= "font-size: 35px;">45:00</div>
-          <button onclick="manualSubmitFinish()" style="background-color: #333; color: white; border: none; padding: 20px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 10px; font-size: 20px;">
+          <div id="timer">45:00</div>
+          <button onclick="manualSubmitFinish()" style="background-color: #333; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 5px;">
               I HAVE SUBMITTED &rarr; VIEW RESULTS
           </button>
       </div>
       <div id="form-container">
-          <iframe id="googleForm" src="https://forms.gle/hbkLGsJrhXWpi8QG9"></iframe>
+          <iframe id="googleForm" src="https://forms.gle/ooR61nC7HQu8Ryr29"></iframe>
       </div>
   </div>
 
   <div id="warning-modal">
-      <div class="modal-content">
-          <h2 style="color: #A50034; margin-top: 0;">Time Advisory</h2>
-          <p style="font-size: 18px; color: #333;">You are nearing the end of your <b>45-minute</b> exam.</p>
-          <button onclick="document.getElementById('warning-modal').style.display='none'" class="start-btn" style="width: auto;">RESUME</button>
+      <div class="modal-content" style="padding: 40px; border-radius: 12px; max-width: 350px; border: none; border-top: 6px solid #fd312e; box-shadow: 0 15px 35px rgba(0,0,0,0.2);">
+          <h2 style="color: #fd312e; margin-top: 0; font-size: 26px; letter-spacing: 0.5px;">Time Advisory</h2>
+          <p style="font-size: 18px; color: #333; margin-top: 20px;">You are nearing the end of your <b>45-minute</b> exam.</p>
+          <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 30px; padding: 0 15px;">
+              Please finalize your answers and submit the form shortly. 
+          </p>
+          <button id="closeModalBtn" class="close-btn" type="button" onclick="document.getElementById('warning-modal').style.display='none'">RESUME EXAMINATION</button>
       </div>
   </div>
 
   <div id="expired-msg">
-      <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 40px; border-radius: 12px; width: 85%; max-width: 350px; text-align: center; border-top: 6px solid #A50034; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
-          <h1 id="statusHeader" style="color: #A50034; margin-top: 0;">Examination Closed</h1>
-          <p id="statusSubtext" style="font-size: 16px; color: #333;">Your session has ended.</p>
+      <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 40px; border-radius: 12px; width: 85%; max-width: 350px; text-align: center; border-top: 6px solid #fd312e; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid #ddd; border-top: 6px solid #fd312e; box-sizing: border-box;">
+          <h1 id="statusHeader" style="color: #fd312e; margin-top: 0; font-size: 26px;">Examination Closed</h1>
+          <p id="statusSubtext" style="font-size: 18px; color: #333; margin-top: 20px;">Your session has timed out.</p>
+          <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 10px;">
+              Any unsubmitted progress could not be saved.
+          </p>
           
           <div id="autoResultContainer" style="margin-top: 25px; border-top: 2px dashed #eee; padding-top: 20px;">
               <div id="scoreDisplayResult" style="font-size: 16px; font-weight: bold;">
@@ -79,7 +147,187 @@
       <p style="font-size: 22px;">Security Violation Detected: Window focus lost, screenshot attempted, or invalid keystroke.</p>
       <p style="font-size: 16px; margin-top: 20px;">Click anywhere on this screen to resume.</p>
   </div>
- 
-  <script src="script.js"></script>
+
+  <script>
+    /* --- CONFIGURATION --- */
+    const EXAM_DURATION = .5 * 60; 
+    const WARNING_TIME = .3 * 60;   
+    const GRACE_DURATION = .3 * 60; 
+    const COOLDOWN_DURATION = .5 * 60; 
+    const MAIN_KEY = 'lg_1exam_main_timer';
+    const GRACE_KEY = 'lg_1exam_grace_timer';
+    const NAME_KEY = 'lg_1exam_user_name'; // Key for stored name
+
+    const API_URL = "https://script.google.com/macros/s/AKfycbxXUmzov1d_xLj9u4x4Bmf7f8Ctb-aJGluOyaUXXF2Su-rFNwO_vNi5MVx7WYjGPW8u/exec";
+    /* --------------------- */
+    
+    function safeGet(key) { try { return localStorage.getItem(key); } catch(e) { return null; } }
+    function safeSet(key,val) { try { localStorage.setItem(key,val); } catch(e) { } }
+    function safeRemove(key) { try { localStorage.removeItem(key); } catch(e) { } }
+
+    let mainStart = safeGet(MAIN_KEY);
+    let graceStart = safeGet(GRACE_KEY);
+    let storedName = safeGet(NAME_KEY);
+    let hasWarned = false;
+
+    // --- ANTI-CHEAT LISTENERS ---
+    function triggerCheatWarning() {
+        if (document.getElementById('exam-interface').style.display === 'block') {
+            document.getElementById('cheat-warning').style.display = 'flex';
+        }
+    }
+
+    document.addEventListener('visibilitychange', function() { if (document.hidden) triggerCheatWarning(); });
+    document.addEventListener('mouseleave', triggerCheatWarning);
+    document.addEventListener("keydown", function (e) {
+        if ((e.ctrlKey || e.metaKey) && ['s','S','p','P'].includes(e.key)) { e.preventDefault(); triggerCheatWarning(); }
+        if (e.ctrlKey && e.shiftKey && (e.key === 's' || e.key === 'S')) { e.preventDefault(); triggerCheatWarning(); }
+    });
+    document.addEventListener("keyup", function (e) {
+        if (e.key === "PrintScreen" || e.keyCode === 44) {
+            try { navigator.clipboard.writeText("⚠️ Screenshots prohibited."); } catch(err) {}
+            triggerCheatWarning();
+        }
+    });
+    document.addEventListener('touchstart', function(e) { if (e.touches.length >= 3) triggerCheatWarning(); }, { passive: true });
+    document.addEventListener('touchmove', function(e) { if (e.touches.length >= 3) triggerCheatWarning(); }, { passive: true });
+
+    // --- TIMER SYSTEM ---
+    setInterval(systemCheck, 1000); 
+    systemCheck(); 
+
+    function systemCheck() {
+      const pred = document.getElementById('predicted-end');
+      if(pred && document.getElementById('start-screen').style.display !== 'none') {
+          pred.textContent = new Date(Date.now() + EXAM_DURATION * 1000).toLocaleTimeString([], {hour: 'numeric',minute:'2-digit'});
+      }
+
+      if (graceStart) {
+          let rem = GRACE_DURATION - Math.floor((Date.now() - graceStart) / 1000);
+          if (rem > 0) {
+              showUI('exam-interface');
+              let mins = Math.floor(rem / 60); let secs = rem % 60;
+              document.getElementById('timer').textContent = `SUBMIT NOW 0${mins}:${secs < 10 ? '0' : ''}${secs}`;
+          } else if (rem > -COOLDOWN_DURATION) { 
+              showUI('expired-msg');
+              autoFetchResult(); // Trigger auto-fetch
+          } 
+          else { resetSystem(); }
+      } 
+      else if (mainStart) {
+          let rem = EXAM_DURATION - Math.floor((Date.now() - mainStart) / 1000);
+          if (rem > 0) {
+              showUI('exam-interface');
+              if (rem <= WARNING_TIME && !hasWarned) { document.getElementById('warning-modal').style.display = "flex"; hasWarned = true; }
+              let mins = Math.floor(rem / 60); let secs = rem % 60;
+              document.getElementById('timer').textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+          } else if (rem > -GRACE_DURATION) { showUI('continue-screen'); } 
+          else if (rem > -(GRACE_DURATION + COOLDOWN_DURATION)) { 
+              showUI('expired-msg'); 
+              autoFetchResult(); // Trigger auto-fetch
+          } 
+          else { resetSystem(); }
+      }
+    }
+
+    function startExam() { 
+        const nameVal = document.getElementById('userNameInput').value.trim();
+        if(!nameVal) { alert("Please enter your name to begin."); return; }
+        storedName = nameVal;
+        safeSet(NAME_KEY, nameVal);
+        mainStart = Date.now(); 
+        safeSet(MAIN_KEY,mainStart); 
+        systemCheck(); 
+    }
+    
+    function startGracePeriod() { graceStart = Date.now(); safeSet(GRACE_KEY,graceStart); systemCheck(); }
+    
+    function manualSubmitFinish() {
+      if (confirm("⚠️ VIEW RESULTS ⚠️\n\nEnsure you clicked SUBMIT on the Google Form first! Continue to results?")) {
+          graceStart = Date.now() - (GRACE_DURATION * 1000) - 1000; 
+          safeSet(GRACE_KEY, graceStart);
+          systemCheck(); 
+      }
+    }
+
+    function showUI(id) {
+        ['start-screen', 'continue-screen', 'exam-interface', 'expired-msg'].forEach(el => {
+            document.getElementById(el).style.display = (el === id) ? (id==='continue-screen'?'flex':'block') : 'none';
+        });
+    }
+
+    function resetSystem() {
+      safeRemove(MAIN_KEY); safeRemove(GRACE_KEY); safeRemove(NAME_KEY);
+      mainStart = null; graceStart = null; storedName = null; hasWarned = false;
+      document.getElementById('timer').textContent = "45:00";
+      showUI('start-screen');
+    }
+
+    // --- AUTO RESULT FETCHER ---
+    let fetchStarted = false;
+    function autoFetchResult() {
+      if (fetchStarted || !storedName) return;
+      fetchStarted = true;
+      
+      const resultDiv = document.getElementById('scoreDisplayResult');
+      document.getElementById('statusHeader').textContent = "Retrieving Results...";
+      document.getElementById('statusSubtext').textContent = "Searching for: " + storedName;
+      resultDiv.innerHTML = "<i>Connecting to database...</i>";
+      
+      // Delay search by 3 seconds to give Google Sheet time to sync
+      setTimeout(() => {
+        fetch(API_URL + "?name=" + encodeURIComponent(storedName))
+          .then(res => res.json())
+          .then(data => {
+              if (data.found) { 
+                  document.getElementById('statusHeader').textContent = "Exam Result";
+                  let remarkColor = (data.remark === "PASSED") ? "#2e7d32" : "#A50034";
+                  resultDiv.innerHTML = `
+                      <div style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-top: 15px;">
+                          <p style="margin: 0 0 10px 0; font-size: 16px; color: #333;">Score: <b>${data.score}</b></p>
+                          <p style="margin: 0; font-size: 18px; color: ${remarkColor};">Remark: <b>${data.remark}</b></p>
+                      </div>
+                  `; 
+              } else { 
+                  resultDiv.innerHTML = "<p style='color:#A50034;'>Result not found yet. Please wait a moment and refresh or search below.</p>";
+              }
+          })
+          .catch(err => { resultDiv.innerHTML = "<p style='color:#A50034;'>Error connecting to database.</p>"; });
+      }, 3000);
+    }
+
+    // --- NEW: MANUAL RESULT FETCHER ---
+    function manualFetchScore() {
+        const nameInput = document.getElementById('manualSearchName').value.trim();
+        const resultDiv = document.getElementById('scoreDisplayResult');
+        
+        if (!nameInput) {
+            alert("Please enter a name to search.");
+            return;
+        }
+
+        document.getElementById('statusHeader').textContent = "Retrieving Results...";
+        document.getElementById('statusSubtext').textContent = "Searching for: " + nameInput;
+        resultDiv.innerHTML = "<i>Connecting to database...</i>";
+
+        fetch(API_URL + "?name=" + encodeURIComponent(nameInput))
+          .then(res => res.json())
+          .then(data => {
+              if (data.found) { 
+                  document.getElementById('statusHeader').textContent = "Exam Result";
+                  let remarkColor = (data.remark === "PASSED") ? "#2e7d32" : "#A50034";
+                  resultDiv.innerHTML = `
+                      <div style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-top: 15px;">
+                          <p style="margin: 0 0 10px 0; font-size: 16px; color: #333;">Score: <b>${data.score}</b></p>
+                          <p style="margin: 0; font-size: 18px; color: ${remarkColor};">Remark: <b>${data.remark}</b></p>
+                      </div>
+                  `; 
+              } else { 
+                  resultDiv.innerHTML = "<p style='color:#A50034;'>Result not found. Check spelling or ensure you submitted.</p>";
+              }
+          })
+          .catch(err => { resultDiv.innerHTML = "<p style='color:#A50034;'>Error connecting to database.</p>"; });
+    }
+  </script>
  </body>
 </html>
