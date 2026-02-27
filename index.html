@@ -280,30 +280,19 @@
 
     function showUI(id) {
         ['start-screen', 'continue-screen', 'exam-interface', 'expired-msg'].forEach(el => {
-            document.getElementById(el).style.display = (el === id) ? (id==='continue-screen'?'flex':'block') : 'none';
+            // THE FIX: Check if the screen is the start or continue screen. 
+            // If it is, use 'flex' to keep it perfectly centered. Otherwise, use 'block'.
+            let displayMode = (el === 'start-screen' || el === 'continue-screen') ? 'flex' : 'block';
+            
+            document.getElementById(el).style.display = (el === id) ? displayMode : 'none';
         });
     }
 
     function resetSystem() {
       safeRemove(MAIN_KEY); safeRemove(GRACE_KEY); safeRemove(NAME_KEY);
       mainStart = null; graceStart = null; storedName = null; hasWarned = false;
-      
-      // 1. Hide everything else
-      if(examInterface) examInterface.style.display = 'none';
-      if(modal) modal.style.display = 'none';
-      if(continueScreen) continueScreen.style.display = 'none';
-      if(expiredMsg) expiredMsg.style.display = 'none';
-      
-      if(timerDisplay) {
-          timerDisplay.style.fontSize = "28px";
-          timerDisplay.style.color = '#A50034';
-      }
-      
-      // 2. THE FIX: Force the browser to scroll to the absolute top
-      window.scrollTo(0, 0);
-      
-      // 3. THE FIX: Explicitly set it back to 'flex' so the centering engine turns back on
-      if(startScreen) startScreen.style.display = 'flex';
+      document.getElementById('timer').textContent = "45:00";
+      showUI('start-screen');
     }
 
     // --- AUTO RESULT FETCHER ---
