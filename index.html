@@ -3,41 +3,13 @@
  <head>
   <title>LG SINGLE SPLIT AIR CONDITIONER SERVICE EXAMINATION</title>
   <link rel="icon" type="image/png" href="LG.png">
-  <style>
-    /* DISABLE TEXT SELECTION */
-    body { margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #fce4e4; overflow: hidden; height: 100vh; 
-      -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
-    }
-    
-    /* SCREENS */
-    #start-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #f6f6f6; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; text-align: center; }
-    .start-card { padding: 40px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); border: 1px solid #e0e0e0; max-width: 400px; background: #fff; border-top: 6px solid #fd312e; text-align: left;}
-    .start-btn { background-color: #fd312e; color: white; border: none; padding: 15px 40px; font-size: 22px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 20px; width: 100%;}
-    .start-btn:hover { background-color: #C62828; }
-
-    #exam-interface { display: none; }
-    #header { position: relative; background: #f6f6f6; padding: 10px; text-align: center; border-bottom: 6px solid #fd312e; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    #timer { font-size: 28px; font-weight: bold; color: #fd312e; }
-    #form-container { width: 100%; height: calc(100vh - 80px); position: relative; }
-    iframe { width: 100%; height: 100%; border: none; }
-    
-    #warning-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); z-index: 2147483647; justify-content: center; align-items: center; }
-    .modal-content { background-color: #fff; padding: 40px; border-radius: 15px; width: 85%; max-width: 400px; text-align: center; border: 3px solid #fd312e; }
-    
-    #expired-msg { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #f6f6f6; z-index: 3000; }
-    
-    /* CHEAT/FOCUS WARNING */
-    #cheat-warning { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #fd312e; color: white; z-index: 9999; justify-content: center; align-items: center; text-align: center; flex-direction: column; }
-    
-    /* Input Styling */
-    .name-input { width: 100%; padding: 12px; margin-bottom: 10px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
-  </style>
+  <link rel="stylesheet" href="style.css">
  </head>
  <body>
 
   <div id="start-screen">
     <div class="start-card">
-        <h1 style="color: black; margin-top: 0; text-align: center;">LG SINGLE SPLIT AIR CONDITIONER SERVICE EXAMINATION</h1>
+        <h1 style="color: black; margin-top: 0; text-align: center;"></h1>
         <input type="text" id="userNameInput" class="name-input" placeholder="Enter your Complete Name (eg. Juan Delacruz)">
         
         <div style="background-color: #FAFAFA; padding: 15px; margin-bottom: 20px; border-radius: 6px;">
@@ -72,7 +44,7 @@
           </button>
       </div>
       <div id="form-container">
-          <iframe id="googleForm" src="https://forms.gle/bDAoLXJoHMcNhc3M6"></iframe>
+          <iframe id="googleForm" src=""></iframe>
       </div>
   </div>
 
@@ -93,6 +65,12 @@
               <div id="scoreDisplayResult" style="font-size: 16px; font-weight: bold;">
                   </div>
           </div>
+
+          <div style="margin-top: 20px; border-top: 1px solid #ddd; padding-top: 15px;">
+              <p style="font-size: 14px; color: #555; margin-bottom: 10px;">Didn't see your result? Search manually:</p>
+              <input type="text" id="manualSearchName" class="name-input" placeholder="Enter Full Name">
+              <button onclick="manualFetchScore()" style="background-color: #333; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%;">SEARCH SCORE</button>
+          </div>
       </div>
   </div>
 
@@ -101,154 +79,7 @@
       <p style="font-size: 22px;">Security Violation Detected: Window focus lost, screenshot attempted, or invalid keystroke.</p>
       <p style="font-size: 16px; margin-top: 20px;">Click anywhere on this screen to resume.</p>
   </div>
-
-  <script>
-    /* --- CONFIGURATION --- */
-    const EXAM_DURATION = .5 * 60; 
-    const WARNING_TIME = .3 * 60;   
-    const GRACE_DURATION = .3 * 60; 
-    const COOLDOWN_DURATION = .5 * 60; 
-    const MAIN_KEY = 'lg_1exam_main_timer';
-    const GRACE_KEY = 'lg_1exam_grace_timer';
-    const NAME_KEY = 'lg_1exam_user_name'; // Key for stored name
-
-    const API_URL = "https://script.google.com/macros/s/AKfycbxXUmzov1d_xLj9u4x4Bmf7f8Ctb-aJGluOyaUXXF2Su-rFNwO_vNi5MVx7WYjGPW8u/exec";
-    /* --------------------- */
-    
-    function safeGet(key) { try { return localStorage.getItem(key); } catch(e) { return null; } }
-    function safeSet(key,val) { try { localStorage.setItem(key,val); } catch(e) { } }
-    function safeRemove(key) { try { localStorage.removeItem(key); } catch(e) { } }
-
-    let mainStart = safeGet(MAIN_KEY);
-    let graceStart = safeGet(GRACE_KEY);
-    let storedName = safeGet(NAME_KEY);
-    let hasWarned = false;
-
-    // --- ANTI-CHEAT LISTENERS ---
-    function triggerCheatWarning() {
-        if (document.getElementById('exam-interface').style.display === 'block') {
-            document.getElementById('cheat-warning').style.display = 'flex';
-        }
-    }
-
-    document.addEventListener('visibilitychange', function() { if (document.hidden) triggerCheatWarning(); });
-    document.addEventListener('mouseleave', triggerCheatWarning);
-    document.addEventListener("keydown", function (e) {
-        if ((e.ctrlKey || e.metaKey) && ['s','S','p','P'].includes(e.key)) { e.preventDefault(); triggerCheatWarning(); }
-        if (e.ctrlKey && e.shiftKey && (e.key === 's' || e.key === 'S')) { e.preventDefault(); triggerCheatWarning(); }
-    });
-    document.addEventListener("keyup", function (e) {
-        if (e.key === "PrintScreen" || e.keyCode === 44) {
-            try { navigator.clipboard.writeText("⚠️ Screenshots prohibited."); } catch(err) {}
-            triggerCheatWarning();
-        }
-    });
-    document.addEventListener('touchstart', function(e) { if (e.touches.length >= 3) triggerCheatWarning(); }, { passive: true });
-    document.addEventListener('touchmove', function(e) { if (e.touches.length >= 3) triggerCheatWarning(); }, { passive: true });
-
-    // --- TIMER SYSTEM ---
-    setInterval(systemCheck, 1000); 
-    systemCheck(); 
-
-    function systemCheck() {
-      const pred = document.getElementById('predicted-end');
-      if(pred && document.getElementById('start-screen').style.display !== 'none') {
-          pred.textContent = new Date(Date.now() + EXAM_DURATION * 1000).toLocaleTimeString([], {hour: 'numeric',minute:'2-digit'});
-      }
-
-      if (graceStart) {
-          let rem = GRACE_DURATION - Math.floor((Date.now() - graceStart) / 1000);
-          if (rem > 0) {
-              showUI('exam-interface');
-              let mins = Math.floor(rem / 60); let secs = rem % 60;
-              document.getElementById('timer').textContent = `SUBMIT NOW 0${mins}:${secs < 10 ? '0' : ''}${secs}`;
-          } else if (rem > -COOLDOWN_DURATION) { 
-              showUI('expired-msg');
-              autoFetchResult(); // Trigger auto-fetch
-          } 
-          else { resetSystem(); }
-      } 
-      else if (mainStart) {
-          let rem = EXAM_DURATION - Math.floor((Date.now() - mainStart) / 1000);
-          if (rem > 0) {
-              showUI('exam-interface');
-              if (rem <= WARNING_TIME && !hasWarned) { document.getElementById('warning-modal').style.display = "flex"; hasWarned = true; }
-              let mins = Math.floor(rem / 60); let secs = rem % 60;
-              document.getElementById('timer').textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-          } else if (rem > -GRACE_DURATION) { showUI('continue-screen'); } 
-          else if (rem > -(GRACE_DURATION + COOLDOWN_DURATION)) { 
-              showUI('expired-msg'); 
-              autoFetchResult(); // Trigger auto-fetch
-          } 
-          else { resetSystem(); }
-      }
-    }
-
-    function startExam() { 
-        const nameVal = document.getElementById('userNameInput').value.trim();
-        if(!nameVal) { alert("Please enter your name to begin."); return; }
-        storedName = nameVal;
-        safeSet(NAME_KEY, nameVal);
-        mainStart = Date.now(); 
-        safeSet(MAIN_KEY,mainStart); 
-        systemCheck(); 
-    }
-    
-    function startGracePeriod() { graceStart = Date.now(); safeSet(GRACE_KEY,graceStart); systemCheck(); }
-    
-    function manualSubmitFinish() {
-      if (confirm("⚠️ VIEW RESULTS ⚠️\n\nEnsure you clicked SUBMIT on the Google Form first! Continue to results?")) {
-          graceStart = Date.now() - (GRACE_DURATION * 1000) - 1000; 
-          safeSet(GRACE_KEY, graceStart);
-          systemCheck(); 
-      }
-    }
-
-    function showUI(id) {
-        ['start-screen', 'continue-screen', 'exam-interface', 'expired-msg'].forEach(el => {
-            document.getElementById(el).style.display = (el === id) ? (id==='continue-screen'?'flex':'block') : 'none';
-        });
-    }
-
-    function resetSystem() {
-      safeRemove(MAIN_KEY); safeRemove(GRACE_KEY); safeRemove(NAME_KEY);
-      mainStart = null; graceStart = null; storedName = null; hasWarned = false;
-      document.getElementById('timer').textContent = "45:00";
-      showUI('start-screen');
-    }
-
-    // --- AUTO RESULT FETCHER ---
-    let fetchStarted = false;
-    function autoFetchResult() {
-      if (fetchStarted || !storedName) return;
-      fetchStarted = true;
-      
-      const resultDiv = document.getElementById('scoreDisplayResult');
-      document.getElementById('statusHeader').textContent = "Retrieving Results...";
-      document.getElementById('statusSubtext').textContent = "Searching for: " + storedName;
-      resultDiv.innerHTML = "<i>Connecting to database...</i>";
-      
-      // Delay search by 3 seconds to give Google Sheet time to sync
-      setTimeout(() => {
-        fetch(API_URL + "?name=" + encodeURIComponent(storedName))
-          .then(res => res.json())
-          .then(data => {
-              if (data.found) { 
-                  document.getElementById('statusHeader').textContent = "Exam Result";
-                  let remarkColor = (data.remark === "PASSED") ? "#2e7d32" : "#fd312e";
-                  resultDiv.innerHTML = `
-                      <div style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-top: 15px;">
-                          <p style="margin: 0 0 10px 0; font-size: 16px; color: #333;">Score: <b>${data.score}</b></p>
-                          <p style="margin: 0; font-size: 18px; color: ${remarkColor};">Remark: <b>${data.remark}</b></p>
-                      </div>
-                  `; 
-              } else { 
-                  resultDiv.innerHTML = "<p style='color:#fd312e;'>Result not found yet. Please wait a moment and refresh.</p>";
-              }
-          })
-          .catch(err => { resultDiv.innerHTML = "<p style='color:#fd312e;'>Error connecting to database.</p>"; });
-      }, 3000);
-    }
-  </script>
+ 
+  <script src="script.js"></script>
  </body>
 </html>
