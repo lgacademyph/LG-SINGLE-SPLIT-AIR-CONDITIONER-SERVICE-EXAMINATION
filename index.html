@@ -20,16 +20,19 @@
 
       .start-card { 
         padding: 40px; 
-        border-radius: 15px; 
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-        border: 1px solid #ddd; 
+        border-radius: 12px; 
+        box-shadow: 0 8px 24px rgba(0,0,0,0.1); 
+        border: 1px solid #e0e0e0; 
+        border-top: 6px solid #fd312e; 
+        background: #fff; 
         
-        /* THE FIX: Adjusts width dynamically based on the screen */
-        width: 90%; 
-        max-width: 600px; 
+        /* THIS IS THE MAGIC: */
+        width: 95%;          /* Takes up 95% of the screen on phones */
+        max-width: 800px;    /* Allows it to stretch very wide on laptops */
+        box-sizing: border-box; /* Prevents padding from breaking the width */
         
-        /* Ensures the 40px padding doesn't push the card outside the screen */
-        box-sizing: border-box; 
+        margin: auto; 
+        text-align: left;
       }
 
       .start-btn { 
@@ -81,8 +84,8 @@
  <body>
 
   <div id="start-screen">
-    <div class="start-card" style="text-align: left; padding: 40px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); border: 1px solid #e0e0e0; max-width: 400px; background: #fff; margin: auto; border-top: 6px solid #fd312e;">
-        <h1 style="color: black; margin-top: 0; margin-bottom: 5px; text-align: center;">LG SINGLE SPLIT AIR CONDITIONER SERVICE EXAMINATION</h1>
+    <div class="start-card">
+        <h1 style="color: black; margin-top: 0; margin-bottom: 5px; text-align: center;">EXAM</h1>
         <br>
         <input type="text" id="userNameInput" class="name-input" placeholder="Enter your Complete Name (eg. Juan Delacruz)">
         <div style="background-color: #FAFAFA; padding: 15px; margin-bottom: 20px; border-radius: 6px;">
