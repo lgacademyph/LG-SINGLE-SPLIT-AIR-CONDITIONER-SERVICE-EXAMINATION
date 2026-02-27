@@ -130,7 +130,7 @@
           .then(data => {
               if (data.found) { 
                   document.getElementById('statusHeader').textContent = "Exam Result";
-                  let remarkColor = (data.remark === "PASSED") ? "#2e7d32" : "#fd312e";
+                  let remarkColor = (data.remark === "PASSED") ? "#2e7d32" : "#A50034";
                   resultDiv.innerHTML = `
                       <div style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-top: 15px;">
                           <p style="margin: 0 0 10px 0; font-size: 16px; color: #333;">Score: <b>${data.score}</b></p>
@@ -138,10 +138,10 @@
                       </div>
                   `; 
               } else { 
-                  resultDiv.innerHTML = "<p style='color:#fd312e;'>Result not found yet. Please wait a moment and refresh or search below.</p>";
+                  resultDiv.innerHTML = "<p style='color:#A50034;'>Result not found yet. Please wait a moment and refresh or search below.</p>";
               }
           })
-          .catch(err => { resultDiv.innerHTML = "<p style='color:#fd312e;'>Error connecting to database.</p>"; });
+          .catch(err => { resultDiv.innerHTML = "<p style='color:#A50034;'>Error connecting to database.</p>"; });
       }, 3000);
     }
 
@@ -164,7 +164,7 @@
           .then(data => {
               if (data.found) { 
                   document.getElementById('statusHeader').textContent = "Exam Result";
-                  let remarkColor = (data.remark === "PASSED") ? "#2e7d32" : "#fd312e";
+                  let remarkColor = (data.remark === "PASSED") ? "#2e7d32" : "#A50034";
                   resultDiv.innerHTML = `
                       <div style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-top: 15px;">
                           <p style="margin: 0 0 10px 0; font-size: 16px; color: #333;">Score: <b>${data.score}</b></p>
@@ -172,8 +172,8 @@
                       </div>
                   `; 
               } else { 
-                  resultDiv.innerHTML = "<p style='color:#fd312e;'>Result not found. Check spelling or ensure you submitted.</p>";
+                  resultDiv.innerHTML = "<p style='color:#A50034;'>Result not found. Check spelling or ensure you submitted.</p>";
               }
           })
-          .catch(err => { resultDiv.innerHTML = "<p style='color:#fd312e;'>Error connecting to database.</p>"; });
+          .catch(err => { resultDiv.innerHTML = "<p style='color:#A50034;'>Error connecting to database.</p>"; });
     }
