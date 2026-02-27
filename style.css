@@ -5,8 +5,11 @@
     
     /* SCREENS */
     #start-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #f6f6f6; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; text-align: center; }
-    .start-card { padding: 40px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); border: 1px solid #e0e0e0; max-width: 400px; background: #fff; border-top: 6px solid #A50034; text-align: left;}
-    .start-btn { background-color: #A50034; color: white; border: none; padding: 15px 40px; font-size: 22px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 20px; width: 100%;}
+    
+    /* ADDED: width: 90% and box-sizing to keep it inside phone screens */
+    .start-card { padding: 40px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); border: 1px solid #e0e0e0; max-width: 400px; width: 90%; box-sizing: border-box; background: #fff; border-top: 6px solid #A50034; text-align: left;}
+    
+    .start-btn { background-color: #A50034; color: white; border: none; padding: 15px 40px; font-size: 22px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 20px; width: 100%; box-sizing: border-box;}
     .start-btn:hover { background-color: #C62828; }
 
     #exam-interface { display: none; }
@@ -16,12 +19,30 @@
     iframe { width: 100%; height: 100%; border: none; }
     
     #warning-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); z-index: 2147483647; justify-content: center; align-items: center; }
-    .modal-content { background-color: #fff; padding: 40px; border-radius: 15px; width: 85%; max-width: 400px; text-align: center; border: 3px solid #A50034; }
+    
+    /* ADDED: box-sizing */
+    .modal-content { background-color: #fff; padding: 40px; border-radius: 15px; width: 85%; max-width: 400px; box-sizing: border-box; text-align: center; border: 3px solid #A50034; }
     
     #expired-msg { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #f6f6f6; z-index: 3000; }
     
-    /* CHEAT/FOCUS WARNING */
-    #cheat-warning { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #A50034; color: white; z-index: 9999; justify-content: center; align-items: center; text-align: center; flex-direction: column; }
+    /* CHEAT/FOCUS WARNING (Added padding and box-sizing for mobile reading) */
+    #cheat-warning { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #A50034; color: white; z-index: 9999; justify-content: center; align-items: center; text-align: center; flex-direction: column; padding: 20px; box-sizing: border-box; }
     
     /* Input Styling */
     .name-input { width: 100%; padding: 12px; margin-bottom: 10px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
+
+    /* =========================================
+       NEW: RESPONSIVE MOBILE ADJUSTMENTS
+       (Triggers only on screens smaller than 480px)
+    ========================================= */
+    @media (max-width: 480px) {
+        .start-card { padding: 25px 20px; }
+        .start-btn { padding: 12px 20px; font-size: 18px; }
+        #timer { font-size: 24px; }
+        .modal-content { padding: 25px 20px; }
+        #cheat-warning h1 { font-size: 32px; }
+        #cheat-warning p { font-size: 16px; }
+        
+        /* Ensures the Google Form has room if the mobile header gets slightly taller */
+        #form-container { height: calc(100vh - 90px); } 
+    }
