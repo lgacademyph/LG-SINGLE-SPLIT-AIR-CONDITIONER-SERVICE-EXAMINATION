@@ -7,7 +7,7 @@
     const GRACE_KEY = 'lg_1exam_grace_timer';
     const NAME_KEY = 'lg_1exam_user_name'; // Key for stored name
 
-    const API_URL = "";
+    const API_URL = "https://script.google.com/macros/s/AKfycbxXUmzov1d_xLj9u4x4Bmf7f8Ctb-aJGluOyaUXXF2Su-rFNwO_vNi5MVx7WYjGPW8u/exec";
     /* --------------------- */
     
     function safeGet(key) { try { return localStorage.getItem(key); } catch(e) { return null; } }
