@@ -161,12 +161,6 @@
               <div id="scoreDisplayResult" style="font-size: 16px; font-weight: bold;">
                   </div>
           </div>
-
-          <div style="margin-top: 20px; border-top: 1px solid #ddd; padding-top: 15px;">
-              <p style="font-size: 14px; color: #555; margin-bottom: 10px;">Didn't see your result? Search manually:</p>
-              <input type="text" id="manualSearchName" class="name-input" placeholder="Enter Full Name">
-              <button onclick="manualFetchScore()" style="background-color: #333; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%;">SEARCH SCORE</button>
-          </div>
       </div>
   </div>
 
@@ -181,7 +175,7 @@
     const EXAM_DURATION = 45 * 60; 
     const WARNING_TIME = 5 * 60;   
     const GRACE_DURATION = 1 * 60; 
-    const COOLDOWN_DURATION = 24 * 60 * 60; 
+    const COOLDOWN_DURATION = 1 * 60 * 60; 
     const MAIN_KEY = 'lg_1exam_main_timer';
     const GRACE_KEY = 'lg_1exam_grace_timer';
     const NAME_KEY = 'lg_1exam_user_name'; // Key for stored name
@@ -321,44 +315,11 @@
                       </div>
                   `; 
               } else { 
-                  resultDiv.innerHTML = "<p style='color:#A50034;'>Result not found yet. Please wait a moment and refresh or search below.</p>";
+                  resultDiv.innerHTML = "<p style='color:#A50034;'>Result not found yet. Please wait a moment and refresh the page.</p>";
               }
           })
           .catch(err => { resultDiv.innerHTML = "<p style='color:#A50034;'>Error connecting to database.</p>"; });
       }, 3000);
-    }
-
-    // --- NEW: MANUAL RESULT FETCHER ---
-    function manualFetchScore() {
-        const nameInput = document.getElementById('manualSearchName').value.trim();
-        const resultDiv = document.getElementById('scoreDisplayResult');
-        
-        if (!nameInput) {
-            alert("Please enter a name to search.");
-            return;
-        }
-
-        document.getElementById('statusHeader').textContent = "Retrieving Results...";
-        document.getElementById('statusSubtext').textContent = "Searching for: " + nameInput;
-        resultDiv.innerHTML = "<i>Connecting to database...</i>";
-
-        fetch(API_URL + "?name=" + encodeURIComponent(nameInput))
-          .then(res => res.json())
-          .then(data => {
-              if (data.found) { 
-                  document.getElementById('statusHeader').textContent = "Exam Result";
-                  let remarkColor = (data.remark === "PASSED") ? "#2e7d32" : "#A50034";
-                  resultDiv.innerHTML = `
-                      <div style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-top: 15px;">
-                          <p style="margin: 0 0 10px 0; font-size: 16px; color: #333;">Score: <b>${data.score}</b></p>
-                          <p style="margin: 0; font-size: 18px; color: ${remarkColor};">Remark: <b>${data.remark}</b></p>
-                      </div>
-                  `; 
-              } else { 
-                  resultDiv.innerHTML = "<p style='color:#A50034;'>Result not found. Check spelling or ensure you submitted.</p>";
-              }
-          })
-          .catch(err => { resultDiv.innerHTML = "<p style='color:#A50034;'>Error connecting to database.</p>"; });
     }
   </script>
  </body>
