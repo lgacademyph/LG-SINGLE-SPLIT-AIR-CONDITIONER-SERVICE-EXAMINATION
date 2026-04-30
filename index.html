@@ -25,30 +25,24 @@
         border: 1px solid #e0e0e0; 
         border-top: 6px solid #A50034; 
         background: #fff; 
-        
-        /* 1. THE DYNAMIC WIDTH (From the last step) */
         width: 95%;          
         max-width: 800px;    
         box-sizing: border-box; 
-        
         margin: auto; 
         text-align: left;
-
-        /* 2. THE SAFETY SCROLL (Added back as requested) */
-        max-height: 90vh; /* Stops the card from being taller than 90% of the screen */
-        overflow-y: auto; /* Adds a scrollbar INSIDE the card if the screen is too short */
+        max-height: 90vh; 
+        overflow-y: auto; 
       }
 
       .start-btn { 
         background-color: #A50034; color: white; border: none; padding: 15px 40px; 
         font-size: 22px; border-radius: 8px; cursor: pointer; font-weight: bold; 
-        margin-top: 20px; 
-        
-        /* Makes the button stretch nicely inside the new dynamic card */
-        width: 100%; 
-        box-sizing: border-box; 
+        margin-top: 20px; width: 100%; box-sizing: border-box; 
       }
       .start-btn:hover { background-color: #C62828; }
+      
+      /* NEW: Disabled button styling while fetching settings */
+      .start-btn:disabled { background-color: #999; cursor: not-allowed; }
 
       /* EXAM INTERFACE */
       #exam-interface { display: none; }
@@ -67,16 +61,7 @@
       .close-btn { background-color: #A50034; color: white; border: none; padding: 15px 30px; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold; margin-top: 20px; pointer-events: auto; }
       .close-btn:hover { background-color: #C62828; }
 
-      #expired-msg { 
-        display: none; 
-        position: fixed; 
-        top: 0; 
-        left: 0; 
-        width: 100%; 
-        height: 100%; 
-        background-color: #f6f6f6; 
-        z-index: 3000; 
-      }
+      #expired-msg { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #f6f6f6; z-index: 3000; }
 
       /* CHEAT/FOCUS WARNING */
       #cheat-warning { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #A50034; color: white; z-index: 9999; justify-content: center; align-items: center; text-align: center; flex-direction: column; }
@@ -93,7 +78,8 @@
         <br>
         <input type="text" id="userNameInput" class="name-input" placeholder="Full Name (eg. Juan Delacruz)">
         <div style="background-color: #FAFAFA; padding: 15px; margin-bottom: 20px; border-radius: 6px;">
-            <p style="margin: 0 0 8px 0; font-size: 16px; color: #333;">&#x23F1;&#xFE0F; <b>Allotted Time:</b> <b style="color: #A50034;">45 Minutes</b></p>
+            <!-- NEW: The Time Limit is now a dynamic ID -->
+            <p style="margin: 0 0 8px 0; font-size: 16px; color: #333;">&#x23F1;&#xFE0F; <b>Allotted Time:</b> <b id="uiTimeLimit" style="color: #A50034;">Fetching from server...</b></p>
             <p style="margin: 0; font-size: 16px; color: #333;">&#x1F512; <b>Session Expiration:</b> Approx. <b style="color: #A50034;" id="predicted-end">Calculating...</b></p>
         </div>
         <h3 style="font-size: 16px; color: #333; margin-bottom: 10px;">Guidelines:</h3>
@@ -105,7 +91,8 @@
             <li>Click "I HAVE SUBMITTED" at the top when finished.</li>
         </ul>
         <div style="text-align: center;">
-            <button class="start-btn" onclick="startExam()">START EXAM</button>
+            <!-- NEW: The button starts out disabled until Google Sheets responds -->
+            <button id="startBtn" class="start-btn" onclick="startExam()" disabled>CONNECTING...</button>
         </div>
     </div>
   </div>
@@ -113,7 +100,7 @@
   <div id="continue-screen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #f6f6f6; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; text-align: center;">
       <div class="start-card" style="padding: 40px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); border: 1px solid #e0e0e0; max-width: 400px; background: #fff; margin: auto; border-top: 6px solid #A50034;">
           <h1 style="color: #A50034; margin-top: 0; margin-bottom: 15px; text-align: center;">Time's Up!</h1>
-          <p style="font-size: 16px; color: #333; text-align: center;">Your 45 minutes have ended.</p>
+          <p style="font-size: 16px; color: #333; text-align: center;">Your time has ended.</p>
           
           <div style="background-color: #FAFAFA; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
               <p style="margin: 0; font-size: 15px; color: #333;">If you <b>have not</b> submitted yet, click below to use your <b>1 final grace minute</b> to do so.</p>
@@ -144,7 +131,7 @@
   <div id="warning-modal">
       <div class="modal-content" style="padding: 40px; border-radius: 12px; max-width: 350px; border: none; border-top: 6px solid #A50034; box-shadow: 0 15px 35px rgba(0,0,0,0.2);">
           <h2 style="color: #A50034; margin-top: 0; font-size: 26px; letter-spacing: 0.5px;">Time Advisory</h2>
-          <p style="font-size: 18px; color: #333; margin-top: 20px;">You are nearing the end of your <b>45-minute</b> exam.</p>
+          <p style="font-size: 18px; color: #333; margin-top: 20px;">You are nearing the end of your exam.</p>
           <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 30px; padding: 0 15px;">
               Please finalize your answers and submit the form shortly. 
           </p>
@@ -172,17 +159,57 @@
 
   <script>
     /* --- CONFIGURATION --- */
-    const EXAM_DURATION = 45 * 60; 
+    // NEW: Changed from const to let so we can dynamically overwrite it
+    let EXAM_DURATION = 45 * 60; 
     const WARNING_TIME = 5 * 60;   
     const GRACE_DURATION = 1 * 60; 
     const COOLDOWN_DURATION = 1 * 60 * 60; 
     const MAIN_KEY = 'lg_1exam_main_timer';
     const GRACE_KEY = 'lg_1exam_grace_timer';
-    const NAME_KEY = 'lg_1exam_user_name'; // Key for stored name
+    const NAME_KEY = 'lg_1exam_user_name';
 
     const API_URL = "https://script.google.com/macros/s/AKfycbxXUmzov1d_xLj9u4x4Bmf7f8Ctb-aJGluOyaUXXF2Su-rFNwO_vNi5MVx7WYjGPW8u/exec";
     /* --------------------- */
     
+    // --- NEW: FETCH DYNAMIC SETTINGS FROM GOOGLE SHEETS ---
+    function fetchExamSettings() {
+        const uiTimeLimit = document.getElementById("uiTimeLimit");
+        const startBtn = document.getElementById("startBtn");
+
+        fetch(API_URL + "?action=getSettings")
+            .then(res => res.json())
+            .then(data => {
+                if (data.timeLimit) {
+                    EXAM_DURATION = data.timeLimit * 60;
+                    if(uiTimeLimit) uiTimeLimit.textContent = data.timeLimit + " Minutes";
+                    
+                    const timerDisplay = document.getElementById('timer');
+                    if(timerDisplay && !mainStart && !graceStart) {
+                        timerDisplay.textContent = data.timeLimit + ":00";
+                    }
+                }
+                
+                // Unlock the Start button
+                if(startBtn) {
+                    startBtn.textContent = "START EXAM";
+                    startBtn.disabled = false;
+                }
+                systemCheck(); // Instantly update the Expiration Clock
+            })
+            .catch(err => {
+                // If the internet is slow or fails, unlock it with the 45min default
+                if(uiTimeLimit) uiTimeLimit.textContent = "45 Minutes (Default)";
+                if(startBtn) {
+                    startBtn.textContent = "START EXAM";
+                    startBtn.disabled = false;
+                }
+            });
+    }
+
+    // Call it immediately on page load
+    fetchExamSettings();
+    // ------------------------------------------------------
+
     function safeGet(key) { try { return localStorage.getItem(key); } catch(e) { return null; } }
     function safeSet(key,val) { try { localStorage.setItem(key,val); } catch(e) { } }
     function safeRemove(key) { try { localStorage.removeItem(key); } catch(e) { } }
@@ -274,10 +301,7 @@
 
     function showUI(id) {
         ['start-screen', 'continue-screen', 'exam-interface', 'expired-msg'].forEach(el => {
-            // THE FIX: Check if the screen is the start or continue screen. 
-            // If it is, use 'flex' to keep it perfectly centered. Otherwise, use 'block'.
             let displayMode = (el === 'start-screen' || el === 'continue-screen') ? 'flex' : 'block';
-            
             document.getElementById(el).style.display = (el === id) ? displayMode : 'none';
         });
     }
